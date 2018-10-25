@@ -16,4 +16,11 @@ A Command Line Interface to lookup the 500 (actually 10 first pages from the) To
 
 #### *And how?*
 
-* It can be run with `make run` (needs [Boot](https://github.com/boot-clj)), which will trigger `make build` to generate the jar file to be run by java
+All you need is:
+
+1. Make
+2. Docker
+3. Internet connection
+
+And then use `make run`. Output will be in the **out** folder.
+If you need to change the genres, either set an environment variable `GENRES` or change the makefile.
