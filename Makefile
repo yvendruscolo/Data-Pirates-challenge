@@ -10,5 +10,11 @@ arr.jar:
 build: arr.jar
 	@echo "arr.jar built!"
 
-run: build
-	docker run --rm -v `pwd`/arr.jar:/opt/arr.jar -v `pwd`/out:/opt/out -w /opt clojure:boot-2.8.1-alpine java -jar arr.jar $(GENRES)
+clean:
+	rm -rf out
+
+test: build clean
+	docker run --rm -v `pwd`:/root/arr -w /root/arr clojure:boot-2.8.1-alpine boot test
+
+run: build clean
+	docker run --rm -v `pwd`/arr.jar:/opt/arr.jar -v `pwd`/out:/opt/out -w /opt clojure:boot-2.8.1-alpine java -jar arr.jar 500 $(GENRES)

@@ -24,3 +24,5 @@ All you need is:
 
 And then use `make run`. Output will be in the **out** folder.
 If you need to change the genres, either set an environment variable `GENRES` or change the makefile.
+
+You can also use `make test` which will check if IMDb's api is still compatible, by running a slimmed version of the application and checking the results

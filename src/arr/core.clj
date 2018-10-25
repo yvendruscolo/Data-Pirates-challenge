@@ -2,7 +2,8 @@
   "My solution to 'Data Pirates challenge', arr!"
   (:require [clojure.string :as s]
             [clojure.java.io :as io]
-            [cheshire.core :refer [generate-stream]]
+            [clojure.test :refer [is]]
+            [cheshire.core :refer [generate-stream parsed-seq]]
             [hickory.core :refer [as-hiccup parse]])
   (:gen-class))
 
@@ -45,15 +46,26 @@
 (defn results 
   "Recieves a genre, and returns a function that keeps track of how many films we been through, and prints that when once we reached the end."
   [genre] 
-  (fn ([n] (println genre "-- done --" n)) ([n _] (inc n))))
+  (fn ([n] (do (println genre "-- done --" n)) true) ([n _] (inc n))))
 
 (defn movies 
   "The main wrapper around the pipeline, including the writting of output"
-  [genre]
+  [pages genre]
   (with-open [file (io/writer (str "out/" genre ".jsonl") :append true)]
    (transduce (movies-by-genre genre file)
               (results genre)
               0
-              (range 1 11))))
+              pages)))
 
-(defn -main [mode & genres] (do (.mkdir (io/file "out")) (dorun (pmap movies genres))(shutdown-agents)))
+(defn -main
+  {:test (fn [& _]
+           (let [genre (peek (shuffle ["action" "adventure" "animation" "biography" "comedy" "crime" "documentary" "drama" "family" "fantasy" "film_noir" "history" "horror" "music" "musical" "mystery" "news" "romance" "sci_fi" "sport" "thriller" "war" "western"]))
+                 _ (-main "100" genre)]
+             (with-open [file (io/reader (str "out/" genre ".jsonl"))]
+               (mapv #(is (= (set (keys %)) #{"title" "year" "duration" "rating"}) 
+                          (str "Oops, keys don't match!" %)) 
+                     (parsed-seq file)))))}
+  [n & genres] 
+  (do (.mkdir (io/file "out")) 
+	  (dorun (pmap #(movies (range 1 (inc (/ (read-string n) 50))) %) genres))
+	  (shutdown-agents)))
