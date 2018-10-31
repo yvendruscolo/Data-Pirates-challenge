@@ -1,10 +1,9 @@
 (set-env! :source-paths #{"src"}
           :dependencies '[[org.clojure/clojure "1.9.0"]
-                          [adzerk/boot-test "1.2.0" :scope "test"]
-                          [hickory  "0.7.1"]
+                          [hickory  "0.7.1" :exclusions [org.clojure/clojurescript viebel/codox-klipse-theme]]
+                          ; hickory works on both clojure and clojurescript, so it has the clojurescript compiler and the google closure optimizer as default dependencies, now explicitly taking it off
                           [cheshire  "5.8.1"]])
 
-(require '[adzerk.boot-test :refer :all])
 
 (task-options! aot {:namespace   #{'arr.core}}
                pom {:project     'arr

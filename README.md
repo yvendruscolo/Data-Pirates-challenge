@@ -23,6 +23,6 @@ All you need is:
 3. Internet connection
 
 And then use `make run`. Output will be in the **out** folder.
-If you need to change the genres, either set an environment variable `GENRES` or change the makefile.
+If you need to change the genres, either set an environment variable `GENRES`, change the makefile or use `make run GENRES="action comedy"`.
 
-You can also use `make test` which will check if IMDb's api is still compatible, by running a slimmed version of the application and checking the results
+You can also use `make test` which will check if IMDb's api is still compatible, by running a slimmed version of the application for a random valid genre and checking the results

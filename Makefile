@@ -1,20 +1,29 @@
 .PHONY: build run
 
-GENRES ?= action adventure animation biography comedy crime documentary drama family fantasy film_noir history horror music musical mystery news romance sci_fi sport thriller war western
+GENRES ?= action adventure animation biography comedy crime drama family fantasy film_noir history horror music musical mystery romance sci_fi sport thriller war western
+IMAGE = clojure:boot-2.8.1-alpine
 
 arr.jar:
-	docker run --rm -v `pwd`:/root/arr -w /root/arr clojure:boot-2.8.1-alpine boot build
+	docker run -v `pwd`:/root/arr -w /root/arr $(IMAGE) boot build
 	mv target/arr.jar arr.jar
 	rm -r target
 
 build: arr.jar
-	@echo "arr.jar built!"
+	@echo "arr.jar is built!"
 
 clean:
-	rm -rf out
+	rm -r out
 
-test: build clean
-	docker run --rm -v `pwd`:/root/arr -w /root/arr clojure:boot-2.8.1-alpine boot test
+test: build
+	docker run \
+	-v `pwd`/arr.jar:/opt/arr.jar \
+	-v `pwd`/out:/opt/out \
+	-w /opt $(IMAGE) \
+	java -jar arr.jar 100 test
 
-run: build clean
-	docker run --rm -v `pwd`/arr.jar:/opt/arr.jar -v `pwd`/out:/opt/out -w /opt clojure:boot-2.8.1-alpine java -jar arr.jar 500 $(GENRES)
+run: build
+	docker run \
+	-v `pwd`/arr.jar:/opt/arr.jar \
+	-v `pwd`/out:/opt/out \
+	-w /opt $(IMAGE) \
+	java -jar arr.jar 500 $(GENRES)
